@@ -7,6 +7,11 @@ RUN npm ci
 # ---- Stage 2: Build the Next.js app ----
 FROM node:20-alpine AS builder
 WORKDIR /app
+
+# Accept API URL as a build argument (NEXT_PUBLIC_ vars are baked in at build time)
+ARG NEXT_PUBLIC_API_URL=http://localhost:5000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build

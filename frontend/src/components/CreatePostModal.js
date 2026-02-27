@@ -2,22 +2,29 @@
 import { useState } from "react";
 
 export default function CreatePostModal({ isOpen, onClose, fetchPosts }) {
-  const [newPost, setNewPost] = useState({ title: "", content: "", author: "" });
+  const [newPost, setNewPost] = useState({
+    title: "",
+    content: "",
+    author: "",
+  });
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: newPost.title,
-          content: newPost.content,
-          author: newPost.author || "Anonymous Student",
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/posts`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: newPost.title,
+            content: newPost.content,
+            author: newPost.author || "Anonymous Student",
+          }),
+        },
+      );
 
       if (response.ok) {
         fetchPosts();
@@ -33,7 +40,7 @@ export default function CreatePostModal({ isOpen, onClose, fetchPosts }) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
       <div className="bg-white p-6 border border-gray-500 w-96">
         <h2 className="text-lg font-bold mb-4">New Post</h2>
-        
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
             className="border border-gray-300 p-2"
@@ -54,11 +61,17 @@ export default function CreatePostModal({ isOpen, onClose, fetchPosts }) {
             placeholder="Content"
             rows="4"
             value={newPost.content}
-            onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
+            onChange={(e) =>
+              setNewPost({ ...newPost, content: e.target.value })
+            }
           ></textarea>
-          
+
           <div className="flex justify-end gap-2 mt-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-200"
+            >
               Cancel
             </button>
             <button type="submit" className="px-4 py-2 bg-blue-600 text-white">
